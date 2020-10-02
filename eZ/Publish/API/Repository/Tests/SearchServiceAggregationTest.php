@@ -29,6 +29,9 @@ use eZ\Publish\API\Repository\Values\Content\Query\Aggregation\Field\TimeRangeAg
 use eZ\Publish\API\Repository\Values\Content\Query\Aggregation\LanguageTermAggregation;
 use eZ\Publish\API\Repository\Values\Content\Query\Aggregation\ObjectStateTermAggregation;
 use eZ\Publish\API\Repository\Values\Content\Query\Aggregation\Range;
+use eZ\Publish\API\Repository\Values\Content\Query\Aggregation\RawRangeAggregation;
+use eZ\Publish\API\Repository\Values\Content\Query\Aggregation\RawStatsAggregation;
+use eZ\Publish\API\Repository\Values\Content\Query\Aggregation\RawTermAggregation;
 use eZ\Publish\API\Repository\Values\Content\Query\Aggregation\SectionTermAggregation;
 use eZ\Publish\API\Repository\Values\Content\Query\Aggregation\UserMetadataTermAggregation;
 use eZ\Publish\API\Repository\Values\Content\Query\Aggregation\VisibilityTermAggregation;
@@ -282,6 +285,55 @@ final class SearchServiceAggregationTest extends BaseTest
                 true => 18,
             ]
         );
+
+        yield RawRangeAggregation::class => [
+            new RawRangeAggregation(
+                'raw_range',
+                'content_modification_date_dt',
+                [
+                    new Range(null, new DateTime('2003-01-01')),
+                    new Range(new DateTime('2003-01-01'), new DateTime('2004-01-01')),
+                    new Range(new DateTime('2004-01-01'), null),
+                ]
+            ),
+            new RangeAggregationResult(
+                'raw_range',
+                [
+                    new RangeAggregationResultEntry(new Range(null, '2003-01-01T00:00:00Z'), 3),
+                    new RangeAggregationResultEntry(new Range('2003-01-01T00:00:00Z', '2004-01-01T00:00:00Z'), 3),
+                    new RangeAggregationResultEntry(new Range('2004-01-01T00:00:00Z', null), 12),
+                ]
+            ),
+        ];
+
+        yield RawStatsAggregation::class => [
+            new RawStatsAggregation(
+                'raw_stats',
+                'content_version_no_i'
+            ),
+            new StatsAggregationResult(
+                'raw_stats',
+                18,
+                1.0,
+                4.0,
+                1.3333333333333333,
+                24.0
+            ),
+        ];
+
+        yield RawTermAggregation::class => [
+            new RawTermAggregation(
+                'raw_term',
+                'content_section_identifier_id'
+            ),
+            new TermAggregationResult('raw_term', [
+                new TermAggregationResultEntry('users', 8),
+                new TermAggregationResultEntry('media', 4),
+                new TermAggregationResultEntry('design', 2),
+                new TermAggregationResultEntry('setup', 2),
+                new TermAggregationResultEntry('standard', 2),
+            ]),
+        ];
     }
 
     /**
@@ -508,7 +560,6 @@ final class SearchServiceAggregationTest extends BaseTest
                 new DateTime('2020-06-30T12:00:00Z'),
                 new DateTime('2020-07-01T00:00:00Z'),
                 new DateTime('2020-07-01T12:00:00Z'),
-                new DateTime('2020-07-30T00:00:00Z'),
                 new DateTime('2020-07-30T12:00:00Z'),
                 new DateTime('2020-08-01T00:00:01Z'),
                 new DateTime('2020-08-01T00:00:02Z'),
@@ -529,7 +580,7 @@ final class SearchServiceAggregationTest extends BaseTest
                             new DateTime('2020-06-30 00:00:00'),
                             new DateTime('2020-07-30 00:00:00')
                         ),
-                        4
+                        3
                     ),
                     new RangeAggregationResultEntry(
                         new Range(
