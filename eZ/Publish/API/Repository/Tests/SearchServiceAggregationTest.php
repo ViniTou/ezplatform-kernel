@@ -289,19 +289,19 @@ final class SearchServiceAggregationTest extends BaseTest
         yield RawRangeAggregation::class => [
             new RawRangeAggregation(
                 'raw_range',
-                'content_modification_date_dt',
+                'content_version_no_i',
                 [
-                    new Range(null, new DateTime('2003-01-01')),
-                    new Range(new DateTime('2003-01-01'), new DateTime('2004-01-01')),
-                    new Range(new DateTime('2004-01-01'), null),
+                    new Range(null, 2),
+                    new Range(2, 3),
+                    new Range(3, null),
                 ]
             ),
             new RangeAggregationResult(
                 'raw_range',
                 [
-                    new RangeAggregationResultEntry(new Range(null, '2003-01-01T00:00:00Z'), 3),
-                    new RangeAggregationResultEntry(new Range('2003-01-01T00:00:00Z', '2004-01-01T00:00:00Z'), 3),
-                    new RangeAggregationResultEntry(new Range('2004-01-01T00:00:00Z', null), 12),
+                    new RangeAggregationResultEntry(new Range(null, 2), 14),
+                    new RangeAggregationResultEntry(new Range(2, 3), 3),
+                    new RangeAggregationResultEntry(new Range(3, null), 1),
                 ]
             ),
         ];
@@ -541,14 +541,14 @@ final class SearchServiceAggregationTest extends BaseTest
                 [
                     new Range(
                         null,
-                        new DateTime('2020-06-30 00:00:00')
+                        new DateTime('2020-07-01 00:00:00')
                     ),
                     new Range(
-                        new DateTime('2020-06-30 00:00:00'),
-                        new DateTime('2020-07-30 00:00:00')
+                        new DateTime('2020-07-01 00:00:00'),
+                        new DateTime('2020-08-01T00:00:00')
                     ),
                     new Range(
-                        new DateTime('2020-07-30 00:00:00'),
+                        new DateTime('2020-08-01T00:00:00'),
                         null
                     ),
                 ]
@@ -571,20 +571,20 @@ final class SearchServiceAggregationTest extends BaseTest
                     new RangeAggregationResultEntry(
                         new Range(
                             null,
-                            new DateTime('2020-06-30 00:00:00')
+                            new DateTime('2020-07-01 00:00:00')
                         ),
                         3,
                     ),
                     new RangeAggregationResultEntry(
                         new Range(
-                            new DateTime('2020-06-30 00:00:00'),
-                            new DateTime('2020-07-30 00:00:00')
+                            new DateTime('2020-07-01 00:00:00'),
+                            new DateTime('2020-08-01T00:00:00')
                         ),
                         3
                     ),
                     new RangeAggregationResultEntry(
                         new Range(
-                            new DateTime('2020-07-30 00:00:00'),
+                            new DateTime('2020-08-01T00:00:00'),
                             null
                         ),
                         3
@@ -599,9 +599,9 @@ final class SearchServiceAggregationTest extends BaseTest
                 'content_type',
                 'datetime_field',
                 [
-                    new Range(null, new DateTime('2020-06-30 00:00:00')),
+                    new Range(null, new DateTime('2020-06-30 00:00:01')),
                     new Range(new DateTime('2020-06-30 12:00:00'), new DateTime('2020-07-30 00:00:00')),
-                    new Range(new DateTime('2020-07-30 00:00:01'), new DateTime('2020-08-01 00:00:02')),
+                    new Range(new DateTime('2020-07-30 00:00:01'), new DateTime('2020-08-01 00:00:03')),
                 ]
             ),
             'ezdatetime',
@@ -621,7 +621,7 @@ final class SearchServiceAggregationTest extends BaseTest
                 'datetime_range',
                 [
                     new RangeAggregationResultEntry(
-                        new Range(null, new DateTime('2020-06-30 00:00:00')),
+                        new Range(null, new DateTime('2020-06-30 00:00:01')),
                         2,
                     ),
                     new RangeAggregationResultEntry(
@@ -629,7 +629,7 @@ final class SearchServiceAggregationTest extends BaseTest
                         3
                     ),
                     new RangeAggregationResultEntry(
-                        new Range(new DateTime('2020-07-30 00:00:01'), new DateTime('2020-08-01 00:00:02')),
+                        new Range(new DateTime('2020-07-30 00:00:01'), new DateTime('2020-08-01 00:00:03')),
                         3
                     ),
                 ]
@@ -696,10 +696,10 @@ final class SearchServiceAggregationTest extends BaseTest
             new RangeAggregationResult(
                 'integer_range',
                 [
-                    new RangeAggregationResultEntry(new Range(null, 10), 10),
+                    new RangeAggregationResultEntry(new Range(null, 10), 9),
                     new RangeAggregationResultEntry(new Range(10, 25), 15),
                     new RangeAggregationResultEntry(new Range(25, 50), 25),
-                    new RangeAggregationResultEntry(new Range(50, null), 50),
+                    new RangeAggregationResultEntry(new Range(50, null), 51),
                 ]
             ),
         ];
@@ -779,14 +779,14 @@ final class SearchServiceAggregationTest extends BaseTest
                 [
                     new RangeAggregationResultEntry(
                         new Range(null, mktime(7, 0, 0, 0, 0, 0)),
-                        3
+                        2
                     ),
                     new RangeAggregationResultEntry(
                         new Range(
                             mktime(7, 0, 0, 0, 0, 0),
                             mktime(12, 0, 0, 0, 0, 0)
                         ),
-                        1
+                        2
                     ),
                     new RangeAggregationResultEntry(
                         new Range(mktime(12, 0, 0, 0, 0, 0), null),
