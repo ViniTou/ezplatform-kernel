@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace eZ\Publish\API\Repository\Values\Content\Query\Aggregation;
 
+use DateTimeInterface;
 use eZ\Publish\API\Repository\Values\ValueObject;
 
 final class Range extends ValueObject
@@ -26,11 +27,11 @@ final class Range extends ValueObject
      */
     private $to;
 
-    public function __construct($form, $to)
+    public function __construct($from, $to)
     {
         parent::__construct();
 
-        $this->from = $form;
+        $this->from = $from;
         $this->to = $to;
     }
 
@@ -46,6 +47,23 @@ final class Range extends ValueObject
 
     public function __toString(): string
     {
-        return implode(' - ', [$this->from, $this->to]);
+        return sprintf(
+            '[%s;%s)',
+            $this->getRangeValueAsString($this->from),
+            $this->getRangeValueAsString($this->to)
+        );
+    }
+
+    private function getRangeValueAsString($value): string
+    {
+        if ($value === null) {
+            return '*';
+        }
+
+        if ($value instanceof DateTimeInterface) {
+            return $value->format(DateTimeInterface::ISO8601);
+        }
+
+        return (string)$value;
     }
 }
