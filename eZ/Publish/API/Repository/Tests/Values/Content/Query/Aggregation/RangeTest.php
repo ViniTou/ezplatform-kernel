@@ -41,8 +41,8 @@ final class RangeTest extends TestCase
 
         yield 'datetime' => [
             new Range(
-                new DateTimeImmutable('2020-01-01 00:00:00'),
-                new DateTimeImmutable('2020-12-31 23:59:59'),
+                new DateTimeImmutable('2020-01-01T00:00:00+0000'),
+                new DateTimeImmutable('2020-12-31T23:59:59+0000'),
             ),
             '[2020-01-01T00:00:00+0000;2020-12-31T23:59:59+0000)',
         ];
